@@ -111,8 +111,9 @@
     }
 \author{William H. Knapp III}
 \title{Reproducibility and Statistics Assignments}
+\usepackage{Sweave}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\input{Reproducibility-concordance}
 \maketitle
 
 \section{What Is Reproducibility?}
@@ -1142,17 +1143,16 @@ of ways to find help. The box below contains raw R code based off the help from
 \href{http://www.statmethods.net/interface/help.html}{Quick-R}, formatted much like what
 you'd see using R Markdown.
 
-<<echo=FALSE>>=  
-options(width=60,width.cutoff=60,keep.blank.line=FALSE)
-@
 
-<<eval=FALSE>>=
-help.start()          #general help
-help(somefunction)    #help about somefunction
-?somefunction         #same thing 
-apropos("test")       #list functions with test in the name
-example(somefunction) #show an example of somefunction
-@
+\begin{Schunk}
+\begin{Sinput}
+> help.start()          #general help
+> help(somefunction)    #help about somefunction
+> ?somefunction         #same thing 
+> apropos("test")       #list functions with test in the name
+> example(somefunction) #show an example of somefunction
+\end{Sinput}
+\end{Schunk}
 
 Sometimes you might not find what you're looking for. In situations like this, I
 recommend turning to your favorite search engine and succinctly describing what
@@ -1210,9 +1210,11 @@ too.
 Now that you're in your assignment directory, enter the following to assign
 the data in politics.csv to a variable called politics.
 
-<<>>=
-politics<-read.csv("politics.csv")
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics<-read.csv("politics.csv")
+\end{Sinput}
+\end{Schunk}
 
 We can name our variables almost anything we want. We could name the variable
 "data,'' ``x,'' or ``my\_awesome\_data.'' ``<-'' is an assignment operator. We
@@ -1230,9 +1232,21 @@ working with. There are a couple simple ways to take a quick look at what your
 variables contain. My favorite is the ``str'' command which will tell you the 
 structure of your data.
 
-<<>>=
-str(politics)
-@
+\begin{Schunk}
+\begin{Sinput}
+> str(politics)
+\end{Sinput}
+\begin{Soutput}
+'data.frame':	132 obs. of  7 variables:
+ $ subject      : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ party        : Factor w/ 3 levels "democrat","independent",..: 3 3 2 2 2 3 3 2 3 2 ...
+ $ testtime     : Factor w/ 2 levels "post","pre": 2 2 2 2 2 2 2 2 2 2 ...
+ $ optimismscore: int  52 51 69 51 61 31 57 48 42 64 ...
+ $ minwage      : Factor w/ 2 levels "no","yes": 1 1 2 1 2 1 1 1 1 1 ...
+ $ sex          : Factor w/ 2 levels "female","male": 2 2 1 2 2 2 2 2 2 2 ...
+ $ income       : num  37.3 42.3 73 33.8 57.3 ...
+\end{Soutput}
+\end{Schunk}
 
 As you can see, politics is a data frame that has 132 observations of 7 variables.
 A data frame is one of several
@@ -1254,9 +1268,15 @@ a data frame is a two dimensional structure (e.g. it has rows and columns), we
 can see what's in any single location by specifying the row and column for the
 data frame. Let's see what political affiliation the 5th participant had.
 
-<<>>=
-politics[5,2]
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics[5,2]
+\end{Sinput}
+\begin{Soutput}
+[1] independent
+Levels: democrat independent republican
+\end{Soutput}
+\end{Schunk}
 
 Notice that I told R what data I wanted to use (i.e. politics). Then I provided
 R with the row and column (i.e. [5,2]) I was interested in.
@@ -1264,9 +1284,17 @@ R with the row and column (i.e. [5,2]) I was interested in.
 If we want to see all the data that are in a particular row, we can specify only
 the row we want.
 
-<<>>=
-politics[5,]
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics[5,]
+\end{Sinput}
+\begin{Soutput}
+  subject       party testtime optimismscore minwage  sex
+5       5 independent      pre            61     yes male
+    income
+5 57.34959
+\end{Soutput}
+\end{Schunk}
 
 Leaving the column index empty tells R that we want all the values of the 5th row.
 
@@ -1275,9 +1303,16 @@ we can specify only that column. Because there's more data than I want to output
 here, I'll introduce you to another command (i.e. head), that will show us the 
 first several observations from a large data set.
 
-<<>>=
-head(politics[,2])
-@
+\begin{Schunk}
+\begin{Sinput}
+> head(politics[,2])
+\end{Sinput}
+\begin{Soutput}
+[1] republican  republican  independent independent
+[5] independent republican 
+Levels: democrat independent republican
+\end{Soutput}
+\end{Schunk}
 
 Notice that we just wrapped politics[,2] in another function. We can use this type
 of construction to perform functions on only the data we want. Also notice that
@@ -1286,18 +1321,34 @@ I left the row value empty which means you want all the data from the 2nd column
 There's a simpler way to refer to variables within a data frame. Simply name the
 data frame, follow it with a dollar sign, and indicate the variable you want.
 
-<<>>=
-tail(politics$income)
-@
+\begin{Schunk}
+\begin{Sinput}
+> tail(politics$income)
+\end{Sinput}
+\begin{Soutput}
+[1]  6.054805 52.399731 89.098814 57.707833 17.419496
+[6] 23.979241
+\end{Soutput}
+\end{Schunk}
 
 Unlike head which gives us the first several values, tail will give us the last.
 Thus, here we're seeing what the last 6 values in the income column are.
 
 If we wanted to see the 28th income we could say either of the following.
-<<>>=
-politics[28,7]
-politics$income[28]
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics[28,7]
+\end{Sinput}
+\begin{Soutput}
+[1] 67.86206
+\end{Soutput}
+\begin{Sinput}
+> politics$income[28]
+\end{Sinput}
+\begin{Soutput}
+[1] 67.86206
+\end{Soutput}
+\end{Schunk}
 
 I prefer the second construction, because it's easy to accidentally use the
 wrong column number. Remembering the variable name is so much easier.
@@ -1316,25 +1367,40 @@ you a couple other ways to quickly subset the data.
 To subset the data we need to create a vector of the data that we want to get.
 Without knowing it we've already created vectors with a single item.
 
-<<>>=
-2
-@
+\begin{Schunk}
+\begin{Sinput}
+> 2
+\end{Sinput}
+\begin{Soutput}
+[1] 2
+\end{Soutput}
+\end{Schunk}
 
 Notice how after entering 2, R returns ``[1] 2.'' This indicates 2 is a vector.
 [1] indicates the index for the adjacent value. There's only one value, so this
 vector has a length of one. We can verify this by asking R the length of 2.
 
-<<>>=
-length(2)
-@
+\begin{Schunk}
+\begin{Sinput}
+> length(2)
+\end{Sinput}
+\begin{Soutput}
+[1] 1
+\end{Soutput}
+\end{Schunk}
 
 There are several ways that we can create vectors. If we want to get the first
 66 values, we can create a vector that goes from one to 66 using 1:66. I'm
 using head below so the output isn't unreasonably long.
 
-<<>>=
-head(1:66)
-@
+\begin{Schunk}
+\begin{Sinput}
+> head(1:66)
+\end{Sinput}
+\begin{Soutput}
+[1] 1 2 3 4 5 6
+\end{Soutput}
+\end{Schunk}
 
 You can also reverse the order (i.e. 66:1) which will create the same vector in
 descending order.
@@ -1349,10 +1415,16 @@ tell us the index of the last observation in income, so we can use this value to
 create the vector we want. I'll assign this vector to a variable ``a'' so we
 can use this to get the data we want.
 
-<<>>=
-a<-c(1:3,12,61,(length(politics$income)-2):length(politics$income))
-politics$income[a]
-@
+\begin{Schunk}
+\begin{Sinput}
+> a<-c(1:3,12,61,(length(politics$income)-2):length(politics$income))
+> politics$income[a]
+\end{Sinput}
+\begin{Soutput}
+[1] 37.280152 42.298008 73.049778 77.556914  6.054805
+[6] 57.707833 17.419496 23.979241
+\end{Soutput}
+\end{Schunk}
 
 ``a'' is a vector containing 1 to 3, 12, 61, and 130-132. You could
 specify each of these values manually (e.g. ``c(1,2,3,12,61,130,131,132)''), but
@@ -1368,19 +1440,46 @@ Two of the logical expressions that are particularly useful to subset data are t
 equals (i.e. ``=='') and does not equal (i.e. ``!='') operators. We can use them to
 determine whether one thing is equal to something else.
 
-<<>>=
-2==2
-2==3
-2!=3
-@
+\begin{Schunk}
+\begin{Sinput}
+> 2==2
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE
+\end{Soutput}
+\begin{Sinput}
+> 2==3
+\end{Sinput}
+\begin{Soutput}
+[1] FALSE
+\end{Soutput}
+\begin{Sinput}
+> 2!=3
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE
+\end{Soutput}
+\end{Schunk}
 
 Let's say we wanted to see which values at the head of politics\$party were
 independents. Let's compare the following heads.
 
-<<>>=
-head(politics$party)
-head(politics$party=="independent")
-@
+\begin{Schunk}
+\begin{Sinput}
+> head(politics$party)
+\end{Sinput}
+\begin{Soutput}
+[1] republican  republican  independent independent
+[5] independent republican 
+Levels: democrat independent republican
+\end{Soutput}
+\begin{Sinput}
+> head(politics$party=="independent")
+\end{Sinput}
+\begin{Soutput}
+[1] FALSE FALSE  TRUE  TRUE  TRUE FALSE
+\end{Soutput}
+\end{Schunk}
 
 You'll see that the second statement creates a vector of
 \href{http://en.wikipedia.org/wiki/Boolean}{boolean} (i.e. true or false)
@@ -1392,10 +1491,15 @@ R can handle more complex logical operations by using other
 like political party equals Independent \emph{AND} sex doesn't equal
 female are true or false.
 
-<<>>=
-head((politics$party=="independent")&
-    (politics$sex!="female"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> head((politics$party=="independent")&
++     (politics$sex!="female"))
+\end{Sinput}
+\begin{Soutput}
+[1] FALSE FALSE FALSE  TRUE  TRUE FALSE
+\end{Soutput}
+\end{Schunk}
 
 Notice how I used parentheses to make it clear which statements went together.
 Normally, I would write the entire expression on a single
@@ -1414,10 +1518,15 @@ practice typing them to lay down a better memory trace.
 The logical or (i.e. ``|'') will tell us when statements like political party
 equals Independent \emph{OR} Republican are true.
 
-<<>>=
-head((politics$party=="independent")|
-    (politics$party=="republican"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> head((politics$party=="independent")|
++     (politics$party=="republican"))
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE TRUE TRUE TRUE TRUE TRUE
+\end{Soutput}
+\end{Schunk}
 
 You can build some very complex statements with logic. I strongly recommend checking
 some data you know should be true or false to make sure your code is working the
@@ -1433,9 +1542,14 @@ data were mixed up. Rather than manually identifying each row from the pretest,
 and massively increasing the chance we make a mistake, we can use a little bit
 of logic to get exactly what we need.
 
-<<>>=
-head(politics$income[politics$testtime=="pre"])
-@
+\begin{Schunk}
+\begin{Sinput}
+> head(politics$income[politics$testtime=="pre"])
+\end{Sinput}
+\begin{Soutput}
+[1] 37.28015 42.29801 73.04978 33.82229 57.34959 12.33421
+\end{Soutput}
+\end{Schunk}
 
 In plain English, this statement says that we want the first six incomes from
 the pretests.
@@ -1459,25 +1573,40 @@ data so that the second half should correspond to the first half, I haven't yet
 checked this. So let's use a bit of logic to compare the data that should be
 the same from the first and second halves.
 
-<<>>=
-head(politics$subject[politics$testtime=="pre"]==
-    politics$subject[politics$testtime=="post"])
-@
+\begin{Schunk}
+\begin{Sinput}
+> head(politics$subject[politics$testtime=="pre"]==
++     politics$subject[politics$testtime=="post"])
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE TRUE TRUE TRUE TRUE TRUE
+\end{Soutput}
+\end{Schunk}
 
 Just looking at the head isn't good enough, as there might be FALSE values
 somewhere later. If only there were some way to quickly determine how many
 false values there were. Fortunately there is. The sum function adds up 
 all the values in a vector.
 
-<<>>=
-sum(1:3)
-@
+\begin{Schunk}
+\begin{Sinput}
+> sum(1:3)
+\end{Sinput}
+\begin{Soutput}
+[1] 6
+\end{Soutput}
+\end{Schunk}
 
 With TRUE and FALSE values, TRUE=1 and FALSE=0.
 
-<<>>=
-sum(c(TRUE,TRUE,FALSE,FALSE,FALSE))
-@
+\begin{Schunk}
+\begin{Sinput}
+> sum(c(TRUE,TRUE,FALSE,FALSE,FALSE))
+\end{Sinput}
+\begin{Soutput}
+[1] 2
+\end{Soutput}
+\end{Schunk}
 
 That's all fine and dandy, but we want to see if there are any times the values
 are false. If we have a large data set and we see there were 1,382 trues, do
@@ -1487,30 +1616,60 @@ Just like the exclamation point changes equals to does \emph{not} equal, it can
 also be used to change TRUE to FALSE and vice versa. So instead of getting the
 sum of TRUE, we want to get the sum of \emph{not} TRUE.
 
-<<>>=
-sum(!c(TRUE,TRUE,FALSE,FALSE,FALSE))
-@
+\begin{Schunk}
+\begin{Sinput}
+> sum(!c(TRUE,TRUE,FALSE,FALSE,FALSE))
+\end{Sinput}
+\begin{Soutput}
+[1] 3
+\end{Soutput}
+\end{Schunk}
 
 Thus we quickly determine if we've made data entry errors by comparing values
 that should be equivalent. To condense the code, I'm going to assign the vector
 indicating which values are associated with the pretests to a variable called
 trues and use that.
 
-<<>>=
-trues<-politics$testtime=="pre"
-sum(!(politics$subject[trues]==politics$subject[!trues]))
-@
+\begin{Schunk}
+\begin{Sinput}
+> trues<-politics$testtime=="pre"
+> sum(!(politics$subject[trues]==politics$subject[!trues]))
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\end{Schunk}
 
 In plain English, we're counting how many of times the subjects in the order
 they are during the pretest are in the same order during the posttest. Let's
 make sure the other values that should be the same are too.
 
-<<>>=
-sum(!(politics$party[trues]==politics$party[!trues]))
-sum(!(politics$subject[trues]==politics$subject[!trues]))
-sum(!(politics$sex[trues]==politics$sex[!trues]))
-sum(!(politics$income[trues]==politics$income[!trues]))
-@
+\begin{Schunk}
+\begin{Sinput}
+> sum(!(politics$party[trues]==politics$party[!trues]))
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\begin{Sinput}
+> sum(!(politics$subject[trues]==politics$subject[!trues]))
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\begin{Sinput}
+> sum(!(politics$sex[trues]==politics$sex[!trues]))
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\begin{Sinput}
+> sum(!(politics$income[trues]==politics$income[!trues]))
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\end{Schunk}
 
 Sweet! I didn't screw up.
 
@@ -1522,9 +1681,11 @@ don't like. First, subject isn't treated as a factor. To fix that, we can
 explicitly tell R to change what we have to a factor. We'll factor the subject
 variable and assign that back to the subject variable.
 
-<<>>=
-politics$subject<-factor(politics$subject)
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics$subject<-factor(politics$subject)
+\end{Sinput}
+\end{Schunk}
 
 I don't really care what order the parties, sexes, or minimum wage responses are
 in, but I do think the pretests should come before the posttests in the testtime
@@ -1533,16 +1694,30 @@ factors unless explicitly told otherwise. Let's fix that now. To fix this, we'll
 ask R to refactor the testtime variable with the levels we want, instead of the
 levels it automatically chooses.
 
-<<>>=
-politics$testtime<-factor(politics$testtime, levels=c("pre", "post"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> politics$testtime<-factor(politics$testtime, levels=c("pre", "post"))
+\end{Sinput}
+\end{Schunk}
 
 We can double check the politics variable to make sure that things are the
 way we intended.
 
-<<>>=
-str(politics)
-@
+\begin{Schunk}
+\begin{Sinput}
+> str(politics)
+\end{Sinput}
+\begin{Soutput}
+'data.frame':	132 obs. of  7 variables:
+ $ subject      : Factor w/ 66 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ party        : Factor w/ 3 levels "democrat","independent",..: 3 3 2 2 2 3 3 2 3 2 ...
+ $ testtime     : Factor w/ 2 levels "pre","post": 1 1 1 1 1 1 1 1 1 1 ...
+ $ optimismscore: int  52 51 69 51 61 31 57 48 42 64 ...
+ $ minwage      : Factor w/ 2 levels "no","yes": 1 1 2 1 2 1 1 1 1 1 ...
+ $ sex          : Factor w/ 2 levels "female","male": 2 2 1 2 2 2 2 2 2 2 ...
+ $ income       : num  37.3 42.3 73 33.8 57.3 ...
+\end{Soutput}
+\end{Schunk}
 
 Much better!
 
@@ -1555,10 +1730,16 @@ I have the incomes represented twice in the data frame, I'll assign the incomes 
 the pretests to a variable called incomes. Then I show you a great way to quickly
 get a sense for your data.
 
-<<>>=
-incomes<-politics$income[trues]
-summary(incomes)
-@
+\begin{Schunk}
+\begin{Sinput}
+> incomes<-politics$income[trues]
+> summary(incomes)
+\end{Sinput}
+\begin{Soutput}
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  5.672  27.760  41.220  43.040  55.920 114.800 
+\end{Soutput}
+\end{Schunk}
 
 Here, I'm summarizing the income data. As the income data for each participant were
 represented twice, I'm only looking at the pretest data here. You'll see summary
@@ -1566,46 +1747,96 @@ provides the minimum, maximum, 1st quartile, 2nd quartile (i.e. median), 3rd qua
 and mean. Had you wanted only the minimum, maximum, median, or mean, you could have
 used the following functions.
 
-<<>>=
-min(incomes)
-max(incomes)
-median(incomes)
-mean(incomes)
-@
+\begin{Schunk}
+\begin{Sinput}
+> min(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 5.672011
+\end{Soutput}
+\begin{Sinput}
+> max(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 114.7565
+\end{Soutput}
+\begin{Sinput}
+> median(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 41.21894
+\end{Soutput}
+\begin{Sinput}
+> mean(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 43.0403
+\end{Soutput}
+\end{Schunk}
 
 Finding variance and standard deviations are similarly easy.
 
-<<>>=
-var(incomes)
-sd(incomes)
-sd(incomes)==sqrt(var(incomes))
-@
+\begin{Schunk}
+\begin{Sinput}
+> var(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 489.7308
+\end{Soutput}
+\begin{Sinput}
+> sd(incomes)
+\end{Sinput}
+\begin{Soutput}
+[1] 22.12986
+\end{Soutput}
+\begin{Sinput}
+> sd(incomes)==sqrt(var(incomes))
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE
+\end{Soutput}
+\end{Schunk}
 
 The standard deviation equals the square root of the variance so everything is as it
 should be. However, Does the variance represent the unbiased estimate of the population
 variance? Let's find out.
 
-<<>>=
-biased<-sum((incomes-mean(incomes))^2)/length(incomes)
-unbiased<-sum((incomes-mean(incomes))^2)/(length(incomes)-1)
-var(incomes)==biased
-var(incomes)==unbiased
-@
+\begin{Schunk}
+\begin{Sinput}
+> biased<-sum((incomes-mean(incomes))^2)/length(incomes)
+> unbiased<-sum((incomes-mean(incomes))^2)/(length(incomes)-1)
+> var(incomes)==biased
+\end{Sinput}
+\begin{Soutput}
+[1] FALSE
+\end{Soutput}
+\begin{Sinput}
+> var(incomes)==unbiased
+\end{Sinput}
+\begin{Soutput}
+[1] TRUE
+\end{Soutput}
+\end{Schunk}
 
 Hooray. It's the unbiased estimate. This is good because will use it to calculate
 the standard error of the mean.
 
-<<>>=
-sem<-sd(incomes)/sqrt(length(incomes))
-@
+\begin{Schunk}
+\begin{Sinput}
+> sem<-sd(incomes)/sqrt(length(incomes))
+\end{Sinput}
+\end{Schunk}
 
-Sweet. We can use \Sexpr{sem} to calculate confidence intervals or make error bars.
+Sweet. We can use 2.72399776853388 to calculate confidence intervals or make error bars.
 
 Before moving on. Let's take a look at the distribution of incomes using a histogram.
 
-<<fig=TRUE>>=
-hist(incomes)
-@
+\begin{Schunk}
+\begin{Sinput}
+> hist(incomes)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-033}
 
 Wow, that was ridiculously easy.
 
@@ -1624,20 +1855,24 @@ packages that are needed for either dplyr or ggplot 2, do it. Should you find
 that installing these packages doesn't allow you to follow along. Please shoot
 me an email with any error messages ASAP so I can update these instructions.
 
-<<eval=FALSE>>=
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("gplots")
-@
+\begin{Schunk}
+\begin{Sinput}
+> install.packages("dplyr")
+> install.packages("ggplot2")
+> install.packages("gplots")
+\end{Sinput}
+\end{Schunk}
 
 Easy peasy. Now that you have the packages installed, you need to tell R that
 you want to work with them.
 
-<<>>=
-library("dplyr")
-library("ggplot2")
-library("gplots")
-@
+\begin{Schunk}
+\begin{Sinput}
+> library("dplyr")
+> library("ggplot2")
+> library("gplots")
+\end{Sinput}
+\end{Schunk}
 
 \subsubsection{R: Chi-Square Tests and Tables}
 Chi-square tests are used to determine whether two categorical variables
@@ -1653,10 +1888,12 @@ Now before we get cracking. I want to reiterate that for each participant I
 have their party, income, etc. twice. I don't want to count each observation
 twice, so I'm going to split the data.
 
-<<>>=
-pre=politics[trues,]
-post=politics[!trues,]
-@
+\begin{Schunk}
+\begin{Sinput}
+> pre=politics[trues,]
+> post=politics[!trues,]
+\end{Sinput}
+\end{Schunk}
 
 This will give me two data frames. One for the pretest data and one for the
 posttest data. As I didn't specify individual columns, all of them will be
@@ -1666,34 +1903,64 @@ Ok, lets count the number of observations we have for each combination of the
 party and minwage factors. Rather than doing complex formulas involving sums and
 logic, we'll use the table function.
 
-<<>>=
-mytable<-table(pre$party,pre$minwage)
-mytable
-@
+\begin{Schunk}
+\begin{Sinput}
+> mytable<-table(pre$party,pre$minwage)
+> mytable
+\end{Sinput}
+\begin{Soutput}
+              no yes
+  democrat     8  18
+  independent 11   6
+  republican  14   9
+\end{Soutput}
+\end{Schunk}
 
 You can copy and paste the table into Excel or some other spreadsheet to 
 create pretty tables with better labels and titles to use in presentations
 or publications.
 
-<<eval=FALSE>>=
-write.table(mytable,"clipboard",sep="\t",col.names=NA)
-@
+\begin{Schunk}
+\begin{Sinput}
+> write.table(mytable,"clipboard",sep="\t",col.names=NA)
+\end{Sinput}
+\end{Schunk}
 
 Ok, so we have the totals. Rather than go through manually and compute the row
 and column margins, we can have R do it for us.
 
-<<>>=
-margin.table(mytable,1) #Row margins
-margin.table(mytable,2) #Column margins
-@
+\begin{Schunk}
+\begin{Sinput}
+> margin.table(mytable,1) #Row margins
+\end{Sinput}
+\begin{Soutput}
+   democrat independent  republican 
+         26          17          23 
+\end{Soutput}
+\begin{Sinput}
+> margin.table(mytable,2) #Column margins
+\end{Sinput}
+\begin{Soutput}
+ no yes 
+ 33  33 
+\end{Soutput}
+\end{Schunk}
 
 We also don't have to compute the expected frequencies long hand. In fact, we
 can just tell R what the categorical variables are and it will run the chi-square
 test for us.
 
-<<>>=
-chisq.test(pre$party,pre$minwage)
-@
+\begin{Schunk}
+\begin{Sinput}
+> chisq.test(pre$party,pre$minwage)
+\end{Sinput}
+\begin{Soutput}
+	Pearson's Chi-squared test
+
+data:  pre$party and pre$minwage
+X-squared = 6.4037, df = 2, p-value = 0.04069
+\end{Soutput}
+\end{Schunk}
 
 Sweet. we have everything we need to write up our data. The results of a statistical
 test are typically written up in the following format:
@@ -1701,13 +1968,15 @@ test are typically written up in the following format:
 Test name/symbol(degrees of freedom) = test value, p=p-value.
 \end{verbatim}
 
-<<include=FALSE>>=
-cs<-chisq.test(pre$party,pre$minwage)
-@
+\begin{Schunk}
+\begin{Sinput}
+> cs<-chisq.test(pre$party,pre$minwage)
+\end{Sinput}
+\end{Schunk}
 
-Thus we'll have $X^{2}$(\Sexpr{cs$parameter[[1]]}) = 
-\Sexpr{formatC(cs$statistic[[1]],format="f",digits=2)}, p = 
-\Sexpr{formatC(cs$p.value[[1]],format="f",digits=3)}. With this result, we'd reject the
+Thus we'll have $X^{2}$(2) = 
+6.40, p = 
+0.041. With this result, we'd reject the
 null hypothesis that party affiliation is independent of one's agreement to support
 increasing the minimum wage. We could also say that democrats support minimum wage hikes
 more than the other parties.
@@ -1722,13 +1991,27 @@ independent t-test.
 There are a couple ways we can go about doing this. First we'll take use the
 way you should be fairly familiar with.
 
-<<>>=
-t.test(pre$optimism[pre$sex=="male"],
-       pre$optimism[pre$sex=="female"],
-       paired=FALSE, var.equal=FALSE,
-       alternative="two.sided",
-       conf.level=.95)
-@
+\begin{Schunk}
+\begin{Sinput}
+> t.test(pre$optimism[pre$sex=="male"],
++        pre$optimism[pre$sex=="female"],
++        paired=FALSE, var.equal=FALSE,
++        alternative="two.sided",
++        conf.level=.95)
+\end{Sinput}
+\begin{Soutput}
+	Welch Two Sample t-test
+
+data:  pre$optimism[pre$sex == "male"] and pre$optimism[pre$sex == "female"]
+t = -0.3744, df = 62.936, p-value = 0.7094
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -10.946279   7.491733
+sample estimates:
+mean of x mean of y 
+ 54.12121  55.84848 
+\end{Soutput}
+\end{Schunk}
 
 As you can see from the output, males and females didn't differ in terms of their optimism
 t(62.94) = -.37, p = .71.
@@ -1757,13 +2040,27 @@ between pre- and posttests for Republicans was significant. Because testtime is 
 within-subjects variable, we can run a paired t-test. Let's also use a Bonferroni correction
 on the t-test so we don't artificially increase our alpha level.
 
-<<>>=
-t.test(politics$optimism[(politics$testtime=="pre")&
-                        (politics$party=="republican")],
-       politics$optimism[(politics$testtime=="post")&
-                        (politics$party=="republican")],
-       paired=TRUE, conf.level=1-.05/3)
-@
+\begin{Schunk}
+\begin{Sinput}
+> t.test(politics$optimism[(politics$testtime=="pre")&
++                         (politics$party=="republican")],
++        politics$optimism[(politics$testtime=="post")&
++                         (politics$party=="republican")],
++        paired=TRUE, conf.level=1-.05/3)
+\end{Sinput}
+\begin{Soutput}
+	Paired t-test
+
+data:  politics$optimism[(politics$testtime == "pre") & (politics$party ==  and politics$optimism[(politics$testtime == "post") & (politics$party ==     "republican")] and     "republican")]
+t = -4.5325, df = 22, p-value = 0.0001643
+alternative hypothesis: true difference in means is not equal to 0
+98.33333 percent confidence interval:
+ -10.31856  -2.81187
+sample estimates:
+mean of the differences 
+              -6.565217 
+\end{Soutput}
+\end{Schunk}
 
 Republicans were more optimistic after watching the videos t(22) = -4.53,
 p < .001. Since we have a significant difference, we might want to create
@@ -1789,11 +2086,13 @@ We'll then calculate the means and standard errors of the means of the optimism 
 for the different conditions.
 
 
-<<>>=
-polsum<-politics%>%group_by(party,testtime)%>%arrange(party,testtime)%>%
-    summarize(means=mean(optimismscore),
-              sems=sd(optimismscore)/sqrt(length(optimismscore)))
-@
+\begin{Schunk}
+\begin{Sinput}
+> polsum<-politics%>%group_by(party,testtime)%>%arrange(party,testtime)%>%
++     summarize(means=mean(optimismscore),
++               sems=sd(optimismscore)/sqrt(length(optimismscore)))
+\end{Sinput}
+\end{Schunk}
 
 dplyr is fairly intelligent. After specifying politics, it knows that's the data frame
 we're going to work with. Thus, we don't have to create long and windy expressions like
@@ -1807,18 +2106,42 @@ to calculate the standard errors of the means and assigning it to the variable s
 We'll take the output of these operations and assign it to a variable called polsum,
 which is short for \emph{pol}itics \emph{sum}mary. Let's see what polsum looks like.
 
-<<>>=
-polsum
-@
+\begin{Schunk}
+\begin{Sinput}
+> polsum
+\end{Sinput}
+\begin{Soutput}
+Source: local data frame [6 x 4]
+Groups: party
+
+        party testtime    means     sems
+1    democrat      pre 70.23077 2.502496
+2    democrat     post 74.26923 2.600922
+3 independent      pre 53.05882 2.706841
+4 independent     post 56.76471 2.200484
+5  republican      pre 39.17391 3.016196
+6  republican     post 45.73913 3.442479
+\end{Soutput}
+\end{Schunk}
 
 For the figure that corresponds to the earlier t-test, we only need the data from the
 republicans. Let's get that and assign it to a new variable to make additional steps
 more clear.
 
-<<>>=
-pubs<-polsum[polsum$party=="republican",]
-pubs
-@
+\begin{Schunk}
+\begin{Sinput}
+> pubs<-polsum[polsum$party=="republican",]
+> pubs
+\end{Sinput}
+\begin{Soutput}
+Source: local data frame [2 x 4]
+Groups: party
+
+       party testtime    means     sems
+1 republican      pre 39.17391 3.016196
+2 republican     post 45.73913 3.442479
+\end{Soutput}
+\end{Schunk}
 
 Groovy. Now let's create a figure. Like most things in R, there are multiple ways to
 do the same thing. After having created graphs for years using the standard graphics
@@ -1826,11 +2149,13 @@ package, ggplot2 was like a breath of fresh air. ggplot2 builds up figures in la
 that can be altered and changed to your liking. We'll start with the basic plot and
 then make some changes.
 
-<<>>=
-fig<-ggplot(pubs,aes(x=factor(testtime),y=means))
-fig<-fig + geom_bar(stat="identity", color="black",
-                    fill=c("deepskyblue2","deeppink"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-ggplot(pubs,aes(x=factor(testtime),y=means))
+> fig<-fig + geom_bar(stat="identity", color="black",
++                     fill=c("deepskyblue2","deeppink"))
+\end{Sinput}
+\end{Schunk}
 
 The first line tells R to create a ggplot using the pubs data. ``aes'' is short for aesthetic,
 which tells ggplot2 roughly how we want the figure to look. We're plotting the factor
@@ -1844,58 +2169,76 @@ fig piece by piece to look exactly how we want it.
 
 Let's add in our error bars that represent one standard error of the mean above and below
 each mean. Then we'll take a peek at what we have.
-<<fig=TRUE>>=
-fig<-fig+geom_errorbar(aes(ymax=means+sems, ymin=means-sems), width=.2)
-fig
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+geom_errorbar(aes(ymax=means+sems, ymin=means-sems), width=.2)
+> fig
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-048}
 
 Let's give the figure a meaningful title. \textbf{NOTE:} I'm going to show you the commands
 one by one, but I won't replot the figure until we're finished. If you want to take a look at
 what the figure looks like after any of the steps, type ``fig'' in the console after you make
 a change.
 
-<<>>=
-fig<-fig+ggtitle("Pre & Post Video Optimism Scores")
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+ggtitle("Pre & Post Video Optimism Scores")
+\end{Sinput}
+\end{Schunk}
 
 Let's change the axis labels.
-<<>>=
-fig<-fig+labs(x="Test Version", y="Optimism Scores\n(higher=more optimistic")
-fig<-fig+scale_x_discrete(breaks=c("pre","post"),labels=c("Pre","Post"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+labs(x="Test Version", y="Optimism Scores\n(higher=more optimistic")
+> fig<-fig+scale_x_discrete(breaks=c("pre","post"),labels=c("Pre","Post"))
+\end{Sinput}
+\end{Schunk}
 
 Let's change the title size, font, and vertical adjustment.
-<<>>=
-fig<-fig+theme(plot.title=element_text(size=15,face="bold",vjust=.5))
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+theme(plot.title=element_text(size=15,face="bold",vjust=.5))
+\end{Sinput}
+\end{Schunk}
 
 Let's do the same thing for the axis labels and text.
-<<>>=
-fig<-fig+theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))
-fig<-fig+theme(axis.title.y=element_text(size=12,face="bold",vjust=1))
-fig<-fig+theme(axis.text.x=element_text(size=10,face="bold",color="black"))
-fig<-fig+theme(axis.text.y=element_text(size=10,face="bold",color="black"))
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))
+> fig<-fig+theme(axis.title.y=element_text(size=12,face="bold",vjust=1))
+> fig<-fig+theme(axis.text.x=element_text(size=10,face="bold",color="black"))
+> fig<-fig+theme(axis.text.y=element_text(size=10,face="bold",color="black"))
+\end{Sinput}
+\end{Schunk}
 
 Let's change the limits of the y-axis so we can clearly see the effects. I picked
 values that would contain the means plus and minus the standard error of the means.
-<<>>=
-fig<-fig+coord_cartesian(ylim=c(min(pubs$means)-2*max(pubs$sems),
-                                max(pubs$means)+2*max(pubs$sems)))
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+coord_cartesian(ylim=c(min(pubs$means)-2*max(pubs$sems),
++                                 max(pubs$means)+2*max(pubs$sems)))
+\end{Sinput}
+\end{Schunk}
 
 Let's make the axes look a little prettier.
-<<>>=
-fig<-fig+theme(panel.border=element_blank(), axis.line=element_line())
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+theme(panel.border=element_blank(), axis.line=element_line())
+\end{Sinput}
+\end{Schunk}
 
 Let's clean up that ugly grey grid and see what we have now.
-<<fig=TRUE>>=
-fig<-fig+theme(panel.grid.major.x=element_blank())
-fig<-fig+theme(panel.grid.major.y=element_line(color="darkgrey"))
-fig<-fig+theme(panel.grid.minor.y=element_blank())
-fig
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-fig+theme(panel.grid.major.x=element_blank())
+> fig<-fig+theme(panel.grid.major.y=element_line(color="darkgrey"))
+> fig<-fig+theme(panel.grid.minor.y=element_blank())
+> fig
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-055}
 
 Sweet. That looks pretty nice. I highly recommend playing with the different
 statements and changing parameters to see what the effect are. Remember, help
@@ -1945,9 +2288,19 @@ and the data the model represents. We're going to wrap the ANOVA function (aov) 
 the summary function as the results from aov won't be very useful by themselves.
 Remember we don't want to include the parties and incomes twice!
 
-<<>>=
-summary(aov(income~party,data=politics[politics$testtime=="pre",]))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(aov(income~party,data=politics[politics$testtime=="pre",]))
+\end{Sinput}
+\begin{Soutput}
+            Df Sum Sq Mean Sq F value Pr(>F)  
+party        2   3973  1986.7   4.493  0.015 *
+Residuals   63  27859   442.2                 
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Soutput}
+\end{Schunk}
 
 From these results, we would be justified in concluding that income is associated
 with political affiliation, F(2, 63) = 4.49, p = .015. Unlike the Chi-square test
@@ -1974,9 +2327,21 @@ specify only the independent variables and the interactions are calculated autom
 
 Let's run a 2-way between-subjects ANOVA predicting income from party affiliation and sex.
 
-<<>>=
-summary(aov(income~party*sex,data=politics[politics$testtime=="pre",]))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(aov(income~party*sex,data=politics[politics$testtime=="pre",]))
+\end{Sinput}
+\begin{Soutput}
+            Df Sum Sq Mean Sq F value Pr(>F)  
+party        2   3973  1986.7   4.544 0.0145 *
+sex          1   1563  1563.0   3.575 0.0635 .
+party:sex    2     63    31.3   0.072 0.9311  
+Residuals   60  26234   437.2                 
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Soutput}
+\end{Schunk}
 
 From these results, we would be justified in concluding that income is associated with
 political affiliation, F(2, 60) = 4.54, p = .015. Income is not associated with sex, F(1, 60)
@@ -1992,42 +2357,45 @@ effect. After finishing the graph, we'll take a look at it and I'll go over some
 commands that aren't as familiar. But first I need to use dplyr to summarize the grouped data.
 
 
-<<fig=TRUE>>=
-polsum<-politics[politics$testtime=="pre",]%>%group_by(party,sex)%>%
-    summarize(means=mean(income),sems=sd(income)/sqrt(length(income)))
-col1=col2hex("deeppink")
-col2=col2hex("deepskyblue2")
-fig<-ggplot(polsum, aes(x=party, y=means, fill=sex))+
-geom_bar(stat="identity",position=position_dodge())+
-scale_fill_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),
-                  labels=c("Female", "Male"))+
-theme(legend.key=element_rect(color="black"))+
-geom_errorbar(aes(ymax=means+sems, ymin=means-sems),
-              width=.2,position=position_dodge(.9))+
-ggtitle("Incomes by Sex and Political Affiliation")+
-labs(x="Political Party Affiliation",y="Income\n(thousands of dollars)")+
-scale_x_discrete(breaks=c("democrat","independent","republican"),
-                 labels=c("Democrat","Independent","Republican"))+
-theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
-theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
-theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
-theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
-theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
-coord_cartesian(ylim=c(min(polsum$means)-2*max(polsum$sems),
-                      max(polsum$means)+2*max(polsum$sems)))+
-theme(panel.border=element_blank(),axis.line=element_line())+
-theme(panel.grid.major.x=element_blank())+
-theme(panel.grid.major.y=element_line(color="darkgrey"))+
-theme(panel.grid.minor.y=element_blank())+
-theme(legend.position=c(.2,.76))+
-theme(legend.background=element_blank())+
-theme(legend.background=element_rect(color="black"))+
-theme(legend.title=element_blank())+
-theme(legend.title=element_text(size=12))+
-theme(legend.title.align=.5)+
-theme(legend.text=element_text(size=10,face="bold"))
-fig
-@
+\begin{Schunk}
+\begin{Sinput}
+> polsum<-politics[politics$testtime=="pre",]%>%group_by(party,sex)%>%
++     summarize(means=mean(income),sems=sd(income)/sqrt(length(income)))
+> col1=col2hex("deeppink")
+> col2=col2hex("deepskyblue2")
+> fig<-ggplot(polsum, aes(x=party, y=means, fill=sex))+
++ geom_bar(stat="identity",position=position_dodge())+
++ scale_fill_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),
++                   labels=c("Female", "Male"))+
++ theme(legend.key=element_rect(color="black"))+
++ geom_errorbar(aes(ymax=means+sems, ymin=means-sems),
++               width=.2,position=position_dodge(.9))+
++ ggtitle("Incomes by Sex and Political Affiliation")+
++ labs(x="Political Party Affiliation",y="Income\n(thousands of dollars)")+
++ scale_x_discrete(breaks=c("democrat","independent","republican"),
++                  labels=c("Democrat","Independent","Republican"))+
++ theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
++ theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
++ theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
++ theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
++ theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
++ coord_cartesian(ylim=c(min(polsum$means)-2*max(polsum$sems),
++                       max(polsum$means)+2*max(polsum$sems)))+
++ theme(panel.border=element_blank(),axis.line=element_line())+
++ theme(panel.grid.major.x=element_blank())+
++ theme(panel.grid.major.y=element_line(color="darkgrey"))+
++ theme(panel.grid.minor.y=element_blank())+
++ theme(legend.position=c(.2,.76))+
++ theme(legend.background=element_blank())+
++ theme(legend.background=element_rect(color="black"))+
++ theme(legend.title=element_blank())+
++ theme(legend.title=element_text(size=12))+
++ theme(legend.title.align=.5)+
++ theme(legend.text=element_text(size=10,face="bold"))
+> fig
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-058}
 
 I'd encourage you to run through this code piece by piece using the fig<-fig+
 construction to see what the different commands do. But here are the most
@@ -2070,37 +2438,40 @@ It's probably no surprise that instead of using ``geom\_bar,'' we'll now be usin
 means we observed. All the differences between this figure and the previous one
 are contained in the first 5 lines.
 
-<<fig=TRUE>>=
-fig<-ggplot(polsum, aes(x=party, y=means, group=sex, color=sex))+
-geom_line(size=1)+
-geom_point(size=2)+
-scale_color_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),
-                  labels=c("Female", "Male"))+
-geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2)+
-ggtitle("Incomes by Sex and Political Affiliation")+
-labs(x="Political Party Affiliation",y="Income\n(thousands of dollars)")+
-scale_x_discrete(breaks=c("democrat","independent","republican"),
-                 labels=c("Democrat","Independent","Republican"))+
-theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
-theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
-theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
-theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
-theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
-coord_cartesian(ylim=c(min(polsum$means)-2*max(polsum$sems),
-                      max(polsum$means)+2*max(polsum$sems)))+
-theme(panel.border=element_blank(),axis.line=element_line())+
-theme(panel.grid.major.x=element_blank())+
-theme(panel.grid.major.y=element_line(color="darkgrey"))+
-theme(panel.grid.minor.y=element_blank())+
-theme(legend.position=c(.2,.76))+
-theme(legend.background=element_blank())+
-theme(legend.background=element_rect(color="black"))+
-theme(legend.title=element_blank())+
-theme(legend.title=element_text(size=12))+
-theme(legend.title.align=.5)+
-theme(legend.text=element_text(size=10,face="bold"))
-fig
-@
+\begin{Schunk}
+\begin{Sinput}
+> fig<-ggplot(polsum, aes(x=party, y=means, group=sex, color=sex))+
++ geom_line(size=1)+
++ geom_point(size=2)+
++ scale_color_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),
++                   labels=c("Female", "Male"))+
++ geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2)+
++ ggtitle("Incomes by Sex and Political Affiliation")+
++ labs(x="Political Party Affiliation",y="Income\n(thousands of dollars)")+
++ scale_x_discrete(breaks=c("democrat","independent","republican"),
++                  labels=c("Democrat","Independent","Republican"))+
++ theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
++ theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
++ theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
++ theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
++ theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
++ coord_cartesian(ylim=c(min(polsum$means)-2*max(polsum$sems),
++                       max(polsum$means)+2*max(polsum$sems)))+
++ theme(panel.border=element_blank(),axis.line=element_line())+
++ theme(panel.grid.major.x=element_blank())+
++ theme(panel.grid.major.y=element_line(color="darkgrey"))+
++ theme(panel.grid.minor.y=element_blank())+
++ theme(legend.position=c(.2,.76))+
++ theme(legend.background=element_blank())+
++ theme(legend.background=element_rect(color="black"))+
++ theme(legend.title=element_blank())+
++ theme(legend.title=element_text(size=12))+
++ theme(legend.title.align=.5)+
++ theme(legend.text=element_text(size=10,face="bold"))
+> fig
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-059}
 
 In a repeated measures ANOVA, you're observing some variable several times for
 each subject (e.g. participant, school, whatever). Thus a repeated measures
@@ -2136,9 +2507,16 @@ First, let's analyze the pre- and posttest optimism data as if the data were
 from a fully between subjects design. Then we'll analyze the same data with
 an appropriate error term and see how that affects things.
 
-<<>>=
-summary(aov(optimismscore~testtime, data=politics))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(aov(optimismscore~testtime, data=politics))
+\end{Sinput}
+\begin{Soutput}
+             Df Sum Sq Mean Sq F value Pr(>F)
+testtime      1    771   770.9   2.258  0.135
+Residuals   130  44381   341.4               
+\end{Soutput}
+\end{Schunk}
 
 Based on these results, we'd be justified in concluding that watching the videos
 had no effect on optimism scores, F(1, 130) = 2.26, p = .135.
@@ -2154,9 +2532,24 @@ In what follows, we're saying that we want error terms related to the subject va
 for each of the within-subjects variables and their interaction. For this first
 example, the error term is really simple.
 
-<<>>=
-summary(aov(optimismscore~testtime+Error(subject/testtime),data=politics))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(aov(optimismscore~testtime+Error(subject/testtime),data=politics))
+\end{Sinput}
+\begin{Soutput}
+Error: subject
+          Df Sum Sq Mean Sq F value Pr(>F)
+Residuals 65  43185   664.4               
+
+Error: subject:testtime
+          Df Sum Sq Mean Sq F value   Pr(>F)    
+testtime   1  770.9   770.9   41.91 1.46e-08 ***
+Residuals 65 1195.6    18.4                     
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Soutput}
+\end{Schunk}
 
 \textbf{WARNING:} Remember how earlier, we changed subjects into a factor. If you didn't
 do this you didn't get the same output that I did.
@@ -2171,11 +2564,25 @@ indeed significant.
 
 For this simple example, we can verify that our results are right with a t-test.
 
-<<>>=
-t.test(politics$optimismscore[politics$testtime=="pre"],
-       politics$optimismscore[politics$testtime=="post"],
-       paired=TRUE)
-@
+\begin{Schunk}
+\begin{Sinput}
+> t.test(politics$optimismscore[politics$testtime=="pre"],
++        politics$optimismscore[politics$testtime=="post"],
++        paired=TRUE)
+\end{Sinput}
+\begin{Soutput}
+	Paired t-test
+
+data:  politics$optimismscore[politics$testtime == "pre"] and politics$optimismscore[politics$testtime == "post"]
+t = -6.474, df = 65, p-value = 1.458e-08
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -6.324356 -3.342310
+sample estimates:
+mean of the differences 
+              -4.833333 
+\end{Soutput}
+\end{Schunk}
 
 Notice that the p-value is exactly the same. Yahoo!
 
@@ -2192,9 +2599,29 @@ The within-subjects ANOVA is just a special case of this general form as all the
 within-subjects IVs. So let's see if pre- posttest optimism scores differed depending on
 political party.
 
-<<>>=
-summary(aov(optimismscore~testtime*party+Error(subject/testtime),data=politics))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(aov(optimismscore~testtime*party+Error(subject/testtime),data=politics))
+\end{Sinput}
+\begin{Soutput}
+Error: subject
+          Df Sum Sq Mean Sq F value   Pr(>F)    
+party      2  21950   10975   32.56 1.95e-10 ***
+Residuals 63  21235     337                     
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: subject:testtime
+               Df Sum Sq Mean Sq F value   Pr(>F)    
+testtime        1  770.9   770.9  42.526 1.35e-08 ***
+testtime:party  2   53.5    26.8   1.476    0.236    
+Residuals      63 1142.1    18.1                     
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Soutput}
+\end{Schunk}
 
 From these results, we can conclude that optimism was related to their party affiliation, 
 F(2, 63) = 32.56, p < .001. Notice how I said it was related, not it depended on party
@@ -2212,32 +2639,61 @@ we'd need to perform a correlation or regression analysis.
 
 Let's see if incomes were related to optimism pre-scores.
 
-<<>>=
-x<-politics$income[politics$testtime=="pre"]
-y<-politics$optimism[politics$testtime=="pre"]
-thecor<-cor(x,y)
-thecor
-@
+\begin{Schunk}
+\begin{Sinput}
+> x<-politics$income[politics$testtime=="pre"]
+> y<-politics$optimism[politics$testtime=="pre"]
+> thecor<-cor(x,y)
+> thecor
+\end{Sinput}
+\begin{Soutput}
+[1] -0.09670988
+\end{Soutput}
+\end{Schunk}
 
 Ok so r=-.097. This suggests a weak negative correlation between income and optimism (i.e. as
 income goes up, optimism slightly tends to go down). But we need to run a test to see if
 this correlation is significant.
 
-<<>>=
-cor.test(x,y)
-@
+\begin{Schunk}
+\begin{Sinput}
+> cor.test(x,y)
+\end{Sinput}
+\begin{Soutput}
+	Pearson's product-moment correlation
+
+data:  x and y
+t = -0.7773, df = 64, p-value = 0.4398
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3309951  0.1488060
+sample estimates:
+        cor 
+-0.09670988 
+\end{Soutput}
+\end{Schunk}
 
 Based on the results, we should conclude that income and optimism are unrelated, r = -.097,
 t(64) = -.78, p = .440. Let's say we found a significant correlation and wanted to create a model
 of our data (i.e. the line of best fit). A line needs a slope and an intercept. We could
 calculate these using the appropriate formulas.
 
-<<>>=
-slope<-thecor*(sd(y)/sd(x))
-intercept<-mean(y)-slope*mean(x)
-slope
-intercept
-@
+\begin{Schunk}
+\begin{Sinput}
+> slope<-thecor*(sd(y)/sd(x))
+> intercept<-mean(y)-slope*mean(x)
+> slope
+\end{Sinput}
+\begin{Soutput}
+[1] -0.08134829
+\end{Soutput}
+\begin{Sinput}
+> intercept
+\end{Sinput}
+\begin{Soutput}
+[1] 58.4861
+\end{Soutput}
+\end{Schunk}
 
 Remember, it's not significant, but if it were, this would mean that for each additional
 thousand dollars of income, pretest optimism decreased less than 1/10th of a point.
@@ -2248,9 +2704,31 @@ determine how much the predicted variable changes with changes in the predictor,
 a linear model. We can build our model like we did earlier models and ask R to summarize
 our model which will provide us all the relevant statistics we need.
 
-<<>>=
-summary(lm(y~x))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(lm(y~x))
+\end{Sinput}
+\begin{Soutput}
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-38.563 -15.240   1.823  12.637  39.088 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 58.48610    5.05673  11.566   <2e-16 ***
+x           -0.08135    0.10465  -0.777     0.44    
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 18.67 on 64 degrees of freedom
+Multiple R-squared:  0.009353,	Adjusted R-squared:  -0.006126 
+F-statistic: 0.6042 on 1 and 64 DF,  p-value: 0.4398
+\end{Soutput}
+\end{Schunk}
 
 Notice this one call gave us $R^2$ which tells you the percent of variance in y that the
 model explains. You might notice that this is just the value of the correlation that we
@@ -2272,10 +2750,34 @@ Fortunately, we already know how to specify models. However, unless we're specif
 interested in interactions, we'll use the ``+'' format for our models. Let's see whether
 sex and income can be used to predict optimism scores.
 
-<<>>=
-summary(lm(optimismscore~income+sex,
-           data=politics[politics$testtime=="pre",]))
-@
+\begin{Schunk}
+\begin{Sinput}
+> summary(lm(optimismscore~income+sex,
++            data=politics[politics$testtime=="pre",]))
+\end{Sinput}
+\begin{Soutput}
+Call:
+lm(formula = optimismscore ~ income + sex, data = politics[politics$testtime == 
+    "pre", ])
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-39.895 -14.114   0.712  12.807  37.844 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 60.21456    6.03250   9.982 1.35e-14 ***
+income      -0.09236    0.10725  -0.861    0.392    
+sexmale     -2.50914    4.71091  -0.533    0.596    
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 18.78 on 63 degrees of freedom
+Multiple R-squared:  0.01379,	Adjusted R-squared:  -0.01751 
+F-statistic: 0.4406 on 2 and 63 DF,  p-value: 0.6456
+\end{Soutput}
+\end{Schunk}
 
 Notice there is now a single intercept and two slopes. The slopes represent increases
 in optimism with an increase in the variable of interest controlling for all other
@@ -2296,32 +2798,35 @@ that includes lines of best fit, despite there are no significant lines of best
 fit. But first we're going to only take the data associated with the pretest so
 our statements don't have to be ridiculously long.
 
-<<fig=TRUE>>=
-pres<-politics[politics$testtime=="pre",]
-fig<-ggplot(pres,aes(x=income,y=optimismscore,color=sex))+
-geom_point(size=2)+
-geom_abline(intercept=60.2+2.51/2, slope=-.092,color=col1)+
-geom_abline(intercept=60.2-2.51/2, slope=-.092,color=col2)+
-scale_color_manual(values=c(col1,col2),breaks=c("female","male"),
-                   labels=c("Female","Male"))+
-ggtitle("Optimism Predicted by Sex and Income")+
-labs(x="Income (Thousands of Dollars)",y="Optimism Score\n(Higher=More)")+
-theme(plot.title=element_text(size=15,face="bold", vjust=.5))+
-theme(axis.title.x=element_text(size=12,face="bold", vjust=-.25))+
-theme(axis.title.y=element_text(size=12,face="bold", vjust=1))+
-theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
-theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
-theme(panel.border=element_blank(), axis.line=element_line())+
-theme(panel.grid.major.x=element_blank())+
-theme(panel.grid.minor.x=element_blank())+
-theme(panel.grid.major.y=element_line(color="darkgrey"))+
-theme(panel.grid.minor.y=element_blank())+
-theme(legend.position=c(.83,.86))+
-theme(legend.background=element_blank())+
-theme(legend.title=element_blank())+
-theme(legend.text=element_text(size=10,face="bold"))
-fig
-@
+\begin{Schunk}
+\begin{Sinput}
+> pres<-politics[politics$testtime=="pre",]
+> fig<-ggplot(pres,aes(x=income,y=optimismscore,color=sex))+
++ geom_point(size=2)+
++ geom_abline(intercept=60.2+2.51/2, slope=-.092,color=col1)+
++ geom_abline(intercept=60.2-2.51/2, slope=-.092,color=col2)+
++ scale_color_manual(values=c(col1,col2),breaks=c("female","male"),
++                    labels=c("Female","Male"))+
++ ggtitle("Optimism Predicted by Sex and Income")+
++ labs(x="Income (Thousands of Dollars)",y="Optimism Score\n(Higher=More)")+
++ theme(plot.title=element_text(size=15,face="bold", vjust=.5))+
++ theme(axis.title.x=element_text(size=12,face="bold", vjust=-.25))+
++ theme(axis.title.y=element_text(size=12,face="bold", vjust=1))+
++ theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
++ theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
++ theme(panel.border=element_blank(), axis.line=element_line())+
++ theme(panel.grid.major.x=element_blank())+
++ theme(panel.grid.minor.x=element_blank())+
++ theme(panel.grid.major.y=element_line(color="darkgrey"))+
++ theme(panel.grid.minor.y=element_blank())+
++ theme(legend.position=c(.83,.86))+
++ theme(legend.background=element_blank())+
++ theme(legend.title=element_blank())+
++ theme(legend.text=element_text(size=10,face="bold"))
+> fig
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Reproducibility-069}
 
 If you included the interaction term between income and sex and found it to
 be significant, you should create a linear model for each sex and create
