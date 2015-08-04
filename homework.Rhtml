@@ -1,0 +1,189 @@
+<html>
+
+<head>
+<title>Title</title>
+</head>
+
+<body>
+
+
+#440 Reproducibility and Statistics Assignment Homework
+
+<!-- Veronica Conaway 
+Reproducibility Homework. -->
+<!--
+--> 
+
+<-Here I am going to load the data file that I will be using.->
+```{r}
+pols<-read.csv("politics.csv")
+```
+
+<- I will now check the structure of the data which will give me the subject, party, testtime, minwage, and sex.->
+```{r}  
+str(pols)
+```
+<-Here I need to assign the factor variable and also make sure that the variable testtime is defined from pre and post test.->
+```{r}
+pols$subject<-factor(pols$subject)
+pols$testtime<-factor(pols$testtime,levels=c("pre","post"))
+
+```
+<- I am running a code to find the minimum, mean, and variance for posttest optimism scores.->
+```{r}
+summary(pols$optimismscore[pols$testtime=="post"])
+var(pols$optimismscore[pols$testtime=="post"])
+```
+The min is 18, the mean 59.82, and the variance for the posttest optimism score is 336.27
+
+<-The histogram that I have made shows optimism scores.->
+```{r}
+hist(pols$optimismscore[pols$testtime=="post"])
+```
+
+<!-- In order to determine if political affiliation
+is independent of one's gender I have created a table with from the data and then put into the Pearson's Chi-Squared test.-->
+```{r}
+tab<-table(pols$party[pols$testtime=="pre"],pols$sex[pols$testtime=="pre"])
+chisq.test(pols$party[pols$testtime=="pre"],pols$sex[pols$testtime=="pre"])
+```
+  The Chi-Square(2)=0.73, p = 0.70 this shows that political affiliation is not independent to gender.  
+  
+<!-- A Welch two sample t.test is run to determine whether or not males and females have different incomes.
+-->
+```{r}
+t.test(pols$income[pols$sex=="male" & pols$testtime=="pre"],pols$income[pols$sex=="female" & pols$testtime=="pre"])                
+```
+Income does not differ based on sex t(61.62)=-1.57,p=0.12
+
+
+I did not have these on my Rstudio so in order to move on I had to install the items to continue. 
+```{r}
+
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("gplots")
+library("dplyr")
+library("gplots")
+library("ggplot2")
+```
+<---Here is the graph that shows the diffrence in income based on sex.--->  
+```{r}  
+temp<-pols[pols$testtime=="pre",]%>%group_by(sex)%>%summarize(means=mean(optimismscore),sems=sd(income)/sqrt(length(income)))
+f<-ggplot(temp,aes(x=factor(sex),y=means))+geom_bar(stat="identity",color="black",fill=c("deeppink","deepskyblue2"))+geom_errorbar(aes(ymax=means+sems, ymin=means-sems), width=.1)
+f+ggtitle("Incomes by Sex")+labs(x="Sex", y="Incomes\n(higher=moreincome")+scale_x_discrete(breaks=c("female","male"),labels=c("Female","Male"))+theme(plot.title=element_text(size=15,face="bold",vjust=.5))+theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+theme(axis.text.x=element_text(size=10,face="bold",color="black"))+theme(axis.text.y=element_text(size=10,face="bold",color="black"))+coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),max(temp$means)+2*max(temp$sems)))+theme(panel.border=element_blank(),axis.line=element_line())+theme(panel.grid.major.x=element_blank())+theme(panel.grid.major.y=element_line(color="darkgrey"))+theme(panel.grid.minor.y=element_blank())
+```
+<!-- Anova is ran to see male and females with different political affiliations have different posttest optimism scores.
+```{r}
+summary(aov(optimismscore~party*sex,data=pols[pols$testtime=="post",]))
+```
+Based on the Anova post optimism scores are related to party, F(2,60)=27.06, p<0.001, but sex was not related to post optimism scores F(1,60)=0.04,p=0.84.  Also there was no relation between sex and party on post optimisim scores F(2,60)= 1.21,p=0.30.
+```{r}
+temp<-politics[politics$testtime=="post",]%>%group_by(party,sex)%>%
+    summarize(means=mean(optimismscore),sems=sd(optimismscore)/sqrt(length(optimismscore)))
+library("gplots")
+library("ggplot2")
+col1=col2hex("deeppink")
+col2=col2hex("deepskyblue2")
+f<-ggplot(temp, aes(x=party, y=means, fill=sex))+
+    geom_bar(stat="identity",position=position_dodge())+
+    scale_fill_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),labels=c("Female", "Male"))+
+    theme(legend.key=element_rect(color="black"))+
+    geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2,position=position_dodge(.9))+
+    ggtitle("Post-Test Optimism Scores by Sex and Political Affiliation")+
+    labs(x="Political Party Affiliation",y="Post-Test Optimism\n(Higher Value=Greater Optimism)")+
+    scale_x_discrete(breaks=c("democrat","independent","republican"),labels=c("Democrat","Independent","Republican"))+
+    theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+    theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+    theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+    theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+    theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+    coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),max(temp$means)+2*max(temp$sems)))+
+    theme(panel.border=element_blank(),axis.line=element_line())+
+    theme(panel.grid.major.x=element_blank())+
+    theme(panel.grid.major.y=element_line(color="darkgrey"))+
+    theme(panel.grid.minor.y=element_blank())+
+    theme(legend.position=c(.2,.76))+
+    theme(legend.background=element_blank())+
+    theme(legend.background=element_rect(color="black"))+
+    theme(legend.title=element_blank())+
+    theme(legend.title=element_text(size=12))+
+    theme(legend.title.align=.5)+
+    theme(legend.text=element_text(size=10,face="bold"))
+f
+```
+ 
+This shows that scores are related to party but not sex or a combanation of both.  
+
+```{r}
+
+temp<-pols[pols$testtime=="post",]%>%group_by(party,sex)%>%
+    summarize(means=mean(optimismscore),sems=sd(optimismscore)/sqrt(length(optimismscore)))
+library("gplots")
+col1=col2hex("deeppink")
+col2=col2hex("deepskyblue2")
+f<-ggplot(temp, aes(x=party, y=means, fill=sex))+
+    geom_bar(stat="identity",position=position_dodge())+
+    scale_fill_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),labels=c("Female", "Male"))+
+    theme(legend.key=element_rect(color="black"))+
+    geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2,position=position_dodge(.9))+
+    ggtitle("Optimism Scores by Sex and Political Affiliation")+
+    labs(x="Political Party Affiliation",y="Optimism Scores)")+
+    scale_x_discrete(breaks=c("democrat","independent","republican"),labels=c("Democrat","Independent","Republican"))+
+    theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+    theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+    theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+    theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+    theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+    coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),max(temp$means)+2*max(temp$sems)))+
+    theme(panel.border=element_blank(),axis.line=element_line())+
+    theme(panel.grid.major.x=element_blank())+
+    theme(panel.grid.major.y=element_line(color="darkgrey"))+
+    theme(panel.grid.minor.y=element_blank())+
+    theme(legend.position=c(.7,.76))+
+    theme(legend.background=element_blank())+
+    theme(legend.background=element_rect(color="black"))+
+    theme(legend.title=element_blank())+
+    theme(legend.title=element_text(size=12))+
+    theme(legend.title.align=.5)+
+    theme(legend.text=element_text(size=10,face="bold"))
+f
+```
+<!-- Here is a line graph for the same data-->
+```{r}
+f<-ggplot(temp, aes(x=party, y=means, group=sex, color=sex))+
+    geom_line(size=1)+
+    geom_point(size=2)+
+    scale_color_manual(values=c(col1,col2),name="Sex",breaks=c("female","male"),labels=c("Female", "Male"))+
+    geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2)+
+    ggtitle("Optimism Scores by Sex and Political Affiliation")+
+    labs(x="Political Party Affiliation",y="Optimism Scores)")+
+    scale_x_discrete(breaks=c("democrat","independent","republican"),labels=c("Democrat","Independent","Republican"))+
+    theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+    theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+    theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+    theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+    theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+    coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),max(temp$means)+2*max(temp$sems)))+
+    theme(panel.border=element_blank(),axis.line=element_line())+
+    theme(panel.grid.major.x=element_blank())+
+    theme(panel.grid.major.y=element_line(color="darkgrey"))+
+    theme(panel.grid.minor.y=element_blank())+
+    theme(legend.position=c(.2,.76))+
+    theme(legend.background=element_blank())+
+    theme(legend.background=element_rect(color="black"))+
+    theme(legend.title=element_blank())+
+    theme(legend.title=element_text(size=12))+
+    theme(legend.title.align=.5)+
+    theme(legend.text=element_text(size=10,face="bold"))
+f
+```
+<!-- A Anova test was run to see if there where any relation of scores and sex and testtiime.  It is shown that there is no relation between sex F(1,64)=0.12,p=0.73, and scores but there is a relation in watching videos F(1,64)=41.30,p<0.001 but it did not matter when the video was watched F(1,64)=0.05,p=0.83. -->
+```{r}
+summary(lm(optimismscore~income+sex,data=pols[pols$testtime=="pre",]))
+```
+
+<!-- R2=0.90, F(3,62)=180.3,p<0.001 shows that pretest optimism scores predict posttest optimism scores with a slope of 0.94.     
+```
+<!--
+
